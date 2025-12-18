@@ -124,19 +124,25 @@ class PublicGroup(APIView):
     permission_classes = [AllowAny]
 
     def get(self,request,pk):
-        study_plan = StudyPlan.objects.filter(is_public=True,pk=pk).prefetch_related("study_topic").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).first()
+        study_plan = StudyPlan.objects.\
+            filter(is_public=True,pk=pk).\
+                prefetch_related("study_topic").\
+                    annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)), my_vote =Value(0) ).first()
+        
         serializer = StudyTopicSerializer(study_plan)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
         
-        #res=StudyPlan.objects.filter(is_public=True).order_by("-created_at").prefetch_related("topic_set").all()
-
 class PrivateGroup(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self,request,pk):
-        study_plan = StudyPlan.objects.filter(Q(user=request.user.pk)|Q(is_public=True),pk=pk).prefetch_related("topic_set").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).first()
+        study_plan = StudyPlan.objects.\
+            filter(Q(user=request.user.pk)|Q(is_public=True),pk=pk).\
+                prefetch_related("study_topic").\
+                        annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
+                                 my_vote =Coalesce(Sum("group_votes__vote",filter=Q(user=request.user.pk)),Value(0)) ).first()
         serializer = StudyTopicSerializer(study_plan)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

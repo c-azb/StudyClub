@@ -16,9 +16,8 @@ const HomePage = () => {
       const res = await fetch(LATESTS_ENDPOINT,{method:"GET"})
       const data = await res.json();
 
-      if("latest" in data) console.log(data.latest);
+      //if("latest" in data) console.log(data.latest);
       
-
       if(res.ok){
         setFeaturedGroups(data.featured);
         setLatestGroups(data.latest);

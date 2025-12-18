@@ -77,6 +77,10 @@ body {
   background-color: transparent;
 }
 
+.underline-btn-highlight{
+  border-bottom: 2px solid rgba(255, 255, 255, 0.685);
+}
+
 .underline-btn:hover{
   border-bottom: 2px solid rgb(255, 255, 255);
 }

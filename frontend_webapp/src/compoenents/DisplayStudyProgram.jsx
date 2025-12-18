@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from 'react-router-dom';
 import Markdown from 'react-markdown';
-
+import UpDownVote from './UpDownVote';
 
 
 const DisplayStudyProgram = () => {
@@ -22,7 +22,7 @@ const DisplayStudyProgram = () => {
     const setStudyPrograms = async () =>{
         const program = await getStudyProgram(pk);
         if (program == null) return;
-        
+        //console.log(program);
         
         const displays = {}
         for (let i=0;i<program.topics.length;i++){
@@ -43,24 +43,16 @@ const DisplayStudyProgram = () => {
         }
     }
 
+
+
   return (
     <>
     {studyProgram != null ?
 
     <div>
-        <div className="d-flex">
-            <h2 className='ms-5 mb-5 fw-bolder'>{studyProgram.title}</h2>
-            
-            <div className='d-flex ms-auto'>
-                <div className='me-2'>
-                <button className='underline-btn'><FontAwesomeIcon icon={faArrowUp}  /></button>
-                <button className='underline-btn'><FontAwesomeIcon icon={faArrowDown}  /></button>
-                </div>
-                <span className=''>
-                {"votes" in studyProgram ? studyProgram.votes:null}
-                </span>
-            </div>
-        </div>
+
+        <UpDownVote studyProgram={studyProgram}/>
+
         
 
     {studyProgram.topics.map((item,index) => (

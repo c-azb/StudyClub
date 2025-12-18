@@ -14,3 +14,6 @@ export const TOPICS_ENDPOINT = generateEndpoint + "topics/";
 export const LATESTS_ENDPOINT = generateEndpoint + "latestGroups/";
 export const PUBLIC_GROUP_ENDPOINT = generateEndpoint + "publicGroup/";
 export const PRIVATE_GROUP_ENDPOINT = generateEndpoint + "privateGroup/";
+
+const groupEndpoint = baseEndpoint + "studyGroup/"
+export const UP_DOWN_VOTE_ENDPOINT = groupEndpoint + "studyVote/";

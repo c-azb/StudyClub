@@ -58,6 +58,8 @@ class TopicSerializer(serializers.ModelSerializer):
 class StudyTopicSerializer(serializers.ModelSerializer):
     topics = TopicSerializer(source="study_topic", many=True, read_only=True)
     votes = serializers.IntegerField(read_only=True)
+    my_vote = serializers.IntegerField(read_only=True,default=True)
+    
 
     class Meta:
         model = StudyPlan
