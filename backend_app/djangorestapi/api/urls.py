@@ -10,4 +10,5 @@ urlpatterns = [
 
     path('acc/',include('accounts.urls')),
     path('generateStudy/',include('StudyGeneration.urls')),
+    path('studyGroup/',include('StudyGroup.urls')),
 ]

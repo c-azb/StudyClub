@@ -57,7 +57,7 @@ const DisplayStudyProgram = () => {
                 <button className='underline-btn'><FontAwesomeIcon icon={faArrowDown}  /></button>
                 </div>
                 <span className=''>
-                {"up_votes" in studyProgram ? studyProgram.up_votes - studyProgram.down_votes:null}
+                {"votes" in studyProgram ? studyProgram.votes:null}
                 </span>
             </div>
         </div>

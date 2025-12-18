@@ -20,15 +20,15 @@ class StudyPlan(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     configs = models.ForeignKey(StudyPlanConfigs,on_delete=models.CASCADE)
 
-    up_votes = models.IntegerField(default=0,blank=True)
-    down_votes = models.IntegerField(default=0,blank=True)
-    description = models.CharField(max_length=500,blank=True,default='')
+    # up_votes = models.IntegerField(default=0,blank=True)
+    # down_votes = models.IntegerField(default=0,blank=True)
+    #description = models.CharField(max_length=500,blank=True,default='')
 
 class Topic(models.Model):
     index = models.IntegerField()
     title = models.CharField(max_length=500)
     content = models.CharField(max_length=10000)
-    study_plan = models.ForeignKey(StudyPlan,on_delete=models.CASCADE)
+    study_plan = models.ForeignKey(StudyPlan,related_name='study_topic',on_delete=models.CASCADE)
 
 
 

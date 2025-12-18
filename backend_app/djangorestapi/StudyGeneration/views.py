@@ -96,6 +96,9 @@ class RetrieveTopicsView(APIView):
         else:
             return Response({'error':'unaccessable object'},status=status.HTTP_400_BAD_REQUEST)
 
+from django.db.models import Sum,Value#, Q
+from django.db.models.functions import Coalesce
+
 
 class LatestGroups(APIView):
     permission_classes = [AllowAny]
@@ -104,8 +107,9 @@ class LatestGroups(APIView):
         #isFeatured = request.query_params.get('isFeatured', None)
         #order_by = "-up_votes" if isFeatured else "-created_at" 
 
-        latest = StudyPlan.objects.filter(is_public=True).select_related("configs").order_by("-created_at")
-        featured = StudyPlan.objects.filter(is_public=True).select_related("configs").order_by("-up_votes")
+        #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").prefetch_related('group_votes').order_by("-created_at")
+        latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).order_by("-created_at")
+        featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).order_by("-votes")
         
         if len(latest) > 10: latest = latest[:10]
         if len(featured) > 10: featured = featured[:10]
@@ -120,7 +124,7 @@ class PublicGroup(APIView):
     permission_classes = [AllowAny]
 
     def get(self,request,pk):
-        study_plan = StudyPlan.objects.filter(is_public=True,pk=pk).prefetch_related("topic_set").first()
+        study_plan = StudyPlan.objects.filter(is_public=True,pk=pk).prefetch_related("study_topic").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).first()
         serializer = StudyTopicSerializer(study_plan)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -132,7 +136,7 @@ class PrivateGroup(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self,request,pk):
-        study_plan = StudyPlan.objects.filter(Q(user=request.user.pk)|Q(is_public=True),pk=pk).prefetch_related("topic_set").first()
+        study_plan = StudyPlan.objects.filter(Q(user=request.user.pk)|Q(is_public=True),pk=pk).prefetch_related("topic_set").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).first()
         serializer = StudyTopicSerializer(study_plan)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

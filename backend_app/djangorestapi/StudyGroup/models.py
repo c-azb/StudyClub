@@ -11,7 +11,7 @@ class GroupUpDownVote(models.Model):
 
 class PrivateGroupMember(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    study_plan = models.ForeignKey(StudyPlan,on_delete=models.CASCADE)
+    study_plan = models.ForeignKey(StudyPlan,related_name="group_votes",on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False,blank=True)
     is_owner = models.BooleanField(default=False,blank=True)
     

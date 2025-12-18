@@ -28,14 +28,14 @@ const StudyGroupItem = ( {group} ) => {
         </div>
         <div className='mx-3 d-flex flex-column'>
             <span  onClick={onSelectItem} className='fw-bold fs-3 item-title'>{group.title}</span>
-            <span className='fst-italic' >{"subject" in group ? group.subject.subject : null}</span>
+            <span className='fst-italic' >{"subject" in group ? group.subject : null}</span>
             <div className='d-flex mt-auto ms-auto'>
               <div className='me-1'>
                 <FontAwesomeIcon icon={faArrowUp}  />
                 <FontAwesomeIcon icon={faArrowDown}  />
               </div>
               <span className=''>
-                {"up_votes" in group ? group.up_votes - group.down_votes:null}
+                {group.votes}
               </span>
             </div>
             {/* <span className='fst-italic' >{description}</span>

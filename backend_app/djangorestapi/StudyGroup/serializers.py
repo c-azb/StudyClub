@@ -12,3 +12,9 @@ class UpDownVoteSerializer(serializers.ModelSerializer):
             return value
         
         raise serializers.ValidationError("Invalid ai complexity option")
+
+
+class GetUpDownVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupUpDownVote
+        fields = ['vote']
