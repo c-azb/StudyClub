@@ -1,0 +1,135 @@
+
+
+
+body {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-image: url('assets/bgimg2.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  height: 100vh; /* Example height for visibility */
+}
+
+
+.text-input{
+  border-radius: 8px;
+  /* width: 75%; */
+  padding: 5px;
+  background-color: #333330;
+  border-bottom: 2px solid rgb(182, 182, 182);
+  border-right: 2px solid rgb(182, 182, 182);
+  box-shadow: 1px 1px 5px rgba(153, 153, 153, 0.664);
+}
+
+.text-input:focus{
+  outline: none;
+  /* border: 2px solid rgb(219, 219, 201); */
+  box-shadow: 0px 0px 7px 1px rgb(254, 255, 241);
+}
+
+.side-btn{
+  background-color: rgba(255, 255, 255, 0);
+  border: 0px;
+  color: lightgray;
+  height: fit-content;
+}
+
+.side-btn:hover{
+  color: rgb(214, 245, 245);
+}
+
+.side-btn-icon{
+  height: fit-content;
+}
+
+
+.overlay-div{
+  position: absolute;
+  top: 100%;
+  left: 80%;
+  background-color: rgb(61, 61, 61);
+  border: 1px solid rgba(255, 215, 38, 0.733);
+  border-radius: 5px;
+  /* padding: 20px; */
+  z-index: 1000; /* High z-index to appear on top of other content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.underline-btn{
+  border: none;
+  color: white;
+  text-decoration: none;
+  padding: 2px;
+  border-bottom: 2px solid rgba(211, 211, 211, 0.438);
+  background-color: transparent;
+}
+
+.underline-btn:hover{
+  border-bottom: 2px solid rgb(255, 255, 255);
+}
+
+.txt-description{
+  font-style: italic;
+  font-size: small;
+}
+
+.dashboard-menu{
+  background-color: rgba(160, 160, 160, 0.199);
+  border-radius: 5px;
+}
+
+.dashboard-menu button{
+    border: 1px solid transparent;
+    color: white;
+    text-decoration: none;
+    padding: 2px;
+    background-color: gray;
+    margin: 15px auto;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.dashboard-menu button:hover{
+  background-color: rgb(99, 99, 99);
+  border: 1px solid white;
+}
+
+.dashboard-content{
+  min-height: 50vh;
+}
+
+.study-topic{
+  background-color: #4b4b4b81;
+  border-radius: 5px;
+  border: 1px solid rgba(231, 231, 231, 0.144);
+}
+
+.study-topic:hover{
+   background-color: #4b4b4b;
+   border: 1px solid rgb(221, 221, 221);
+   cursor: pointer;
+}
+
+.topic-content{
+  border: 1px solid rgb(68, 68, 68);
+  border-top: none;
+  border-radius: 5px;
+}
+
+.item-title:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}

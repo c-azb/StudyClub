@@ -1,0 +1,14 @@
+
+django
+djangorestframework
+django-filter
+django-cors-headers
+djangorestframework-simplejwt
+Pillow
+
+langchain
+langchain_community
+langgraph
+
+#local
+langchain-ollama
