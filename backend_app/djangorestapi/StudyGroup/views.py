@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import GroupUpDownVote,PrivateGroupMember
-from .serializers import UpDownVoteSerializer
+from .serializers import UpDownVoteSerializer,StudyUpDownVoteSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -70,3 +70,16 @@ class StudyVote(APIView):
         except:
             return None
 
+# from StudyGeneration.models import StudyPlan
+# from StudyGeneration.serializers import StudysOverviewSerializer
+# from django.db.models import Q
+
+
+class ListMyVotedGroups(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,vote):
+        res = GroupUpDownVote.objects.filter(user = request.user.pk,vote = vote-1).select_related('study_plan')
+        serializer = StudyUpDownVoteSerializer(res,many=True)
+        return Response(serializer.data)

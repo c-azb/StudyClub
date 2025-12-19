@@ -108,8 +108,8 @@ class LatestGroups(APIView):
         #order_by = "-up_votes" if isFeatured else "-created_at" 
 
         #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").prefetch_related('group_votes').order_by("-created_at")
-        latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).order_by("-created_at")
-        featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes"),Value(0)) ).order_by("-votes")
+        latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
+        featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
         
         if len(latest) > 10: latest = latest[:10]
         if len(featured) > 10: featured = featured[:10]

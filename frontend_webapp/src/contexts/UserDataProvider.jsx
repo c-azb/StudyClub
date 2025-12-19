@@ -59,7 +59,7 @@ const UserDataProvider = ({children}) => {
             return await getStudyGroup(pk,PUBLIC_GROUP_ENDPOINT,{});
         }
 
-        const index = getStudyProgramId(pk);
+        const index =null; //getStudyProgramId(pk);
 
         if (index == null){
             return await getStudyGroup(pk,PRIVATE_GROUP_ENDPOINT,{"Authorization":`Bearer ${accessToken.current}`});

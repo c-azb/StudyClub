@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from .models import StudyPlan,Topic, StudyPlanConfigs
 from .src.configs_setup import ContentEnum,LearnSpeedEnum,AIComplexityEnum,school_level_options
-from StudyGroup.serializers import GetUpDownVoteSerializer
+#from StudyGroup.serializers import GetUpDownVoteSerializer
 
 class StudyConfigsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,7 +58,7 @@ class TopicSerializer(serializers.ModelSerializer):
 class StudyTopicSerializer(serializers.ModelSerializer):
     topics = TopicSerializer(source="study_topic", many=True, read_only=True)
     votes = serializers.IntegerField(read_only=True)
-    my_vote = serializers.IntegerField(read_only=True,default=True)
+    my_vote = serializers.IntegerField(read_only=True,default=0)
     
 
     class Meta:
@@ -70,6 +70,7 @@ class StudyTopicSerializer(serializers.ModelSerializer):
 class StudysOverviewSerializer(serializers.ModelSerializer):
     subject = serializers.CharField(source="configs.subject", read_only=True)
     votes = serializers.IntegerField(read_only=True)
+    #my_vote = serializers.IntegerField(read_only=True,default=0)
 
     class Meta:
         model = StudyPlan

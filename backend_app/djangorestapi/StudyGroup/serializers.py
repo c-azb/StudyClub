@@ -18,3 +18,14 @@ class GetUpDownVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupUpDownVote
         fields = ['vote']
+
+# from StudyGeneration.serializers import StudyPlanSerializer
+from StudyGeneration.serializers import StudyPlanSerializer
+
+class StudyUpDownVoteSerializer(serializers.ModelSerializer):
+
+    study_plan = StudyPlanSerializer(many=False,read_only=True) #dont use if same name of var; source = 'study_plan'
+
+    class Meta:
+        model = GroupUpDownVote
+        fields = '__all__'

@@ -17,3 +17,4 @@ export const PRIVATE_GROUP_ENDPOINT = generateEndpoint + "privateGroup/";
 
 const groupEndpoint = baseEndpoint + "studyGroup/"
 export const UP_DOWN_VOTE_ENDPOINT = groupEndpoint + "studyVote/";
+export const LIST_MY_VOTED_ENDPOINT = groupEndpoint + "listMyVotedGroups/";
