@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { FILE_ENDPOINT } from '../constants/endpoints'
 import { faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import UpDownVote from './UpDownVote'
 
 const StudyGroupItem = ( {group} ) => {
 
@@ -29,7 +30,8 @@ const StudyGroupItem = ( {group} ) => {
         <div className='mx-3 d-flex flex-column'>
             <span  onClick={onSelectItem} className='fw-bold fs-3 item-title'>{group.title}</span>
             <span className='fst-italic' >{"subject" in group ? group.subject : null}</span>
-            <div className='d-flex mt-auto ms-auto'>
+            <UpDownVote studyProgram={group} canVote={false} />
+            {/* <div className='d-flex mt-auto ms-auto'>
               <div className='me-1'>
                 <FontAwesomeIcon icon={faArrowUp}  />
                 <FontAwesomeIcon icon={faArrowDown}  />
@@ -37,7 +39,7 @@ const StudyGroupItem = ( {group} ) => {
               <span className=''>
                 {group.votes}
               </span>
-            </div>
+            </div> */}
             {/* <span className='fst-italic' >{description}</span>
             <span className='fst-italic'>{autor}</span> */}
         </div>

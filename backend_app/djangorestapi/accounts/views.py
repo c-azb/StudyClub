@@ -1,12 +1,16 @@
 
 
-from rest_framework import generics
+from rest_framework import generics,status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from .serializers import UserSerializer,TokenRefreshSerializerCookie
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from django.conf import settings
 from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -40,10 +44,12 @@ class TokenRefreshFromCookieView(TokenRefreshView):
         request.data["refresh"] = "-"
         return super().post(request, *args, **kwargs)
 
-from rest_framework.response import Response
-from rest_framework import status
+
 
 class LogoutView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self,request):
         response = Response({"detail": "Logged out successfully."}, status=status.HTTP_200_OK)
         

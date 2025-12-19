@@ -70,8 +70,8 @@ class StudyTopicSerializer(serializers.ModelSerializer):
 class StudysOverviewSerializer(serializers.ModelSerializer):
     subject = serializers.CharField(source="configs.subject", read_only=True)
     votes = serializers.IntegerField(read_only=True)
-    #my_vote = serializers.IntegerField(read_only=True,default=0)
+    my_vote = serializers.IntegerField(read_only=True,default=0)
 
     class Meta:
         model = StudyPlan
-        fields = ['id','title','image','is_public','created_at','updated_at','user','configs','votes','subject']
+        fields = ['id','title','image','is_public','created_at','updated_at','user','configs','votes','subject','my_vote']

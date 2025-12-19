@@ -4,21 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from '../contexts/AuthProvider';
 
-const UpDownVote = ({studyProgram}) => {
+const UpDownVote = ({studyProgram,canVote=false}) => {
 
     const [myVote,setMyVote] = useState(0);
-    const [voting,setVoting] = useState(false);
+    const [voting,setVoting] = useState(!canVote);
     const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
 
-
-    useEffect(()=>{        
-        if("my_vote" in studyProgram) 
+    useEffect(()=>{
+        if("my_vote" in studyProgram && canVote) 
             setMyVote(studyProgram.my_vote);
         },
         [studyProgram] );
 
     const onVote = async (newVote) => {        
-        if(!isLoggedIn) return;
+        if(!isLoggedIn || !canVote) return;
 
         setVoting(true);
 
@@ -40,11 +39,8 @@ const UpDownVote = ({studyProgram}) => {
     }
 
   return (
-    <>
-            <div className="d-flex">
-            <h2 className='ms-5 mb-5 fw-bolder'>{studyProgram.title}</h2>
-            
-            <div className='d-flex ms-auto'>
+    <>      
+            <div className='d-flex ms-auto mt-auto'>
                 <div className='me-2'>
                 <button disabled={voting} onClick={()=>{onVote(1);}} className={`underline-btn ${myVote==1?'underline-btn-highlight':null}`}>
                     <FontAwesomeIcon icon={faArrowUp}  />
@@ -59,7 +55,6 @@ const UpDownVote = ({studyProgram}) => {
                 {"votes" in studyProgram ? studyProgram.votes:null}
                 </span>
             </div>
-        </div>
     </>
   )
 }

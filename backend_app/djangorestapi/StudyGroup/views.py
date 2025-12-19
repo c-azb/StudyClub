@@ -73,13 +73,31 @@ class StudyVote(APIView):
 # from StudyGeneration.models import StudyPlan
 # from StudyGeneration.serializers import StudysOverviewSerializer
 # from django.db.models import Q
-
+from django.db.models import Q,Sum,Value
+from django.db.models.functions import Coalesce
 
 class ListMyVotedGroups(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self,request,vote):
-        res = GroupUpDownVote.objects.filter(user = request.user.pk,vote = vote-1).select_related('study_plan')
+        res = GroupUpDownVote.objects.filter(user = request.user.pk,vote = vote-1).select_related('study_plan').\
+            annotate(votes = Coalesce(Sum("vote"),Value(0)))
+
         serializer = StudyUpDownVoteSerializer(res,many=True)
-        return Response(serializer.data)
+        fixed_data = []
+
+
+        for d in serializer.data:
+            item = d['study_plan']
+            item['my_vote'] = d['vote']
+            item['votes'] = d['votes']
+            fixed_data.append(item)
+
+        #print(serializer.data)
+        return Response(fixed_data)
+
+#[{'id': 5, 
+# 'study_plan': {'id': 3, 'image': '/media/group_images/2025/images.jpg', 
+# 'title': 'Python', 'is_public': True, 'created_at': '2025-12-15T20:00:07.840658Z', 'updated_at': '2025-12-15T20:00:07.841655Z', 
+# 'user': 1, 'configs': 3}, 'vote': -1, 'user': 1}]

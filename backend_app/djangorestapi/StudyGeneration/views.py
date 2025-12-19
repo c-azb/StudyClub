@@ -11,7 +11,8 @@ from .serializers import StudyPlanSerializer,TopicSerializer,StudyConfigsSeriali
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
-from django.db.models import Q
+from django.db.models import Q,Sum,Value
+from django.db.models.functions import Coalesce
 
 from .models import StudyPlan,Topic,StudyPlanConfigs
 
@@ -78,8 +79,15 @@ class GenerateView(APIView):
 
 
     def get(self,request):
-        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).order_by("-updated_at")
-        serializer = StudyPlanSerializer(my_study_plans,many=True)
+        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).select_related("configs").\
+            annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
+                     my_vote =Coalesce(Sum("group_votes__vote",filter=Q(group_votes__user=request.user.pk)),Value(0))  ).order_by("-updated_at")
+        
+        serializer = StudysOverviewSerializer(my_study_plans,many=True)
+        #print(serializer.data)
+
+        #my_study_plans = StudyPlan.objects.filter(user=request.user.pk).order_by("-updated_at")
+        #serializer = StudyPlanSerializer(my_study_plans,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
@@ -96,8 +104,7 @@ class RetrieveTopicsView(APIView):
         else:
             return Response({'error':'unaccessable object'},status=status.HTTP_400_BAD_REQUEST)
 
-from django.db.models import Sum,Value#, Q
-from django.db.models.functions import Coalesce
+
 
 
 class LatestGroups(APIView):
@@ -142,7 +149,7 @@ class PrivateGroup(APIView):
             filter(Q(user=request.user.pk)|Q(is_public=True),pk=pk).\
                 prefetch_related("study_topic").\
                         annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
-                                 my_vote =Coalesce(Sum("group_votes__vote",filter=Q(user=request.user.pk)),Value(0)) ).first()
+                                 my_vote =Coalesce(Sum("group_votes__vote",filter=Q(group_votes__user=request.user.pk)),Value(0)) ).first()
         serializer = StudyTopicSerializer(study_plan)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

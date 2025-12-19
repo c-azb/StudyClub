@@ -51,8 +51,10 @@ const DisplayStudyProgram = () => {
 
     <div>
 
-        <UpDownVote studyProgram={studyProgram}/>
-
+    <div className="d-flex">
+        <h2 className='ms-5 mb-5 fw-bolder'> {studyProgram.title}</h2>
+        <UpDownVote studyProgram={studyProgram} canVote={true}/>
+    </div>
         
 
     {studyProgram.topics.map((item,index) => (

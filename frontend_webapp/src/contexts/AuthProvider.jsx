@@ -77,7 +77,11 @@ const AuthProvider = ({children}) => {
     }
 
     const logout = async () => {
-      const res = await fetch(LOGOUT_ENDPOINT,{method:"POST",credentials:"include"});
+      const res = await fetch(LOGOUT_ENDPOINT,{
+        method:"POST",
+        headers:{"Authorization":`Bearer ${accessToken.current}`},
+        credentials:"include"
+      });
       accessToken.current = null;
       setIsLoggedIn(false);
       if(!res.ok){

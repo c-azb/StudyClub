@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { LIST_MY_VOTED_ENDPOINT } from '../../constants/endpoints'
 import { AuthContext } from '../../contexts/AuthProvider';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import GroupsListItem from './GroupsListItem';
 
 const Groups = () => {
 
@@ -17,10 +18,10 @@ const Groups = () => {
 
     const voteSearch = displayUpVoteGroups ? 2 : 0;
 
-    if(voteSearch && upVoteGroups != null){
+    if(voteSearch && upVoteGroups.current != null){
       setStudyPrograms(upVoteGroups.current)
       return;
-    }else if(!voteSearch && downVoteGroups != null){
+    }else if(!voteSearch && downVoteGroups.current != null){
       setStudyPrograms(downVoteGroups.current)
       return;
     }
@@ -44,11 +45,11 @@ const Groups = () => {
     
   }
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const onClickItem = (pk) => {
-    navigate(`/displayStudy/${pk}`);
-  }
+  // const onClickItem = (pk) => {
+  //   navigate(`/displayStudy/${pk}`);
+  // }
 
   useEffect(()=>{listMyUpVoteGroups();},[displayUpVoteGroups])
 
@@ -68,14 +69,18 @@ const Groups = () => {
 
     </div>
     
+    <GroupsListItem studyPrograms={studyPrograms} />
     
-
-      {studyPrograms.map((item,index)=>(
+    {/* {studyPrograms ? 
+    studyPrograms.map((item,index)=>(
       <div key={index} className='study-topic p-3 d-flex' onClick={()=>{onClickItem(item.study_plan.id);}}>
         <h3>{`${index+1}- ${item.study_plan.title}`}</h3>
         <span className='mt-auto ms-auto txt-description'>{item.study_plan.updated_at}</span>
       </div>
-    ))}
+    )) : null
+  } */}
+
+      
     
     </>
   )

@@ -25,6 +25,7 @@ from StudyGeneration.serializers import StudyPlanSerializer
 class StudyUpDownVoteSerializer(serializers.ModelSerializer):
 
     study_plan = StudyPlanSerializer(many=False,read_only=True) #dont use if same name of var; source = 'study_plan'
+    votes = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = GroupUpDownVote

@@ -12,7 +12,7 @@ const UserDataProvider = ({children}) => {
     const isUpdated = useRef(false);
 
     const listAllMyPrograms = async () => {
-        if(!isLoggedIn || isUpdated.current) return;
+        if(!isLoggedIn ) return;//|| isUpdated.current
 
         /*[{created_at:"2025-12-12T16:26:35.624941Z",id:1,title:"Python",updated_at:"2025-12-12T16:26:35.624941Z",user:1}]*/
         const res = await fetch(GENERATE_ENDPOINT,{
