@@ -26,7 +26,7 @@ function App() {
           <Route path='/' element={ <HomePage /> } />
           <Route path='/LoginRegister' element={ <RerouteLoginReq shouldBeLoggedIn={false}><LoginRegister /></RerouteLoginReq> } />
           <Route path='/Dashboard' element={ <RerouteLoginReq shouldBeLoggedIn={true}><Dashboard/></RerouteLoginReq> } />
-          <Route path='/generateStudy' element={ <RerouteLoginReq shouldBeLoggedIn={true}><GenerateStudy /></RerouteLoginReq>  } />
+          <Route path='/generateStudy/:pk' element={ <RerouteLoginReq shouldBeLoggedIn={true}><GenerateStudy /></RerouteLoginReq>  } />
           {/* <Route path='/generateStudy' element={ <GenerateStudy /> } /> */}
           <Route path='/displayStudy/:pk' element={ <DisplayStudyProgram /> } />
         </Routes>

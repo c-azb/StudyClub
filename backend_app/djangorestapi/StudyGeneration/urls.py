@@ -8,5 +8,6 @@ urlpatterns = [
     path('latestGroups/',views.LatestGroups.as_view()),
     path('publicGroup/<int:pk>/',views.PublicGroup.as_view()),
     path('privateGroup/<int:pk>/',views.PrivateGroup.as_view()),
+    path('getConfigs/<int:pk>/',views.GetMyGroupConfigs.as_view()),
 
 ]

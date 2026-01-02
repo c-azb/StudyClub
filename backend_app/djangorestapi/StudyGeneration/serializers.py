@@ -5,10 +5,10 @@ from .models import StudyPlan,Topic, StudyPlanConfigs
 from .src.configs_setup import ContentEnum,LearnSpeedEnum,AIComplexityEnum,school_level_options
 #from StudyGroup.serializers import GetUpDownVoteSerializer
 
-class StudyConfigsSerializer(serializers.ModelSerializer):
+class StudyConfigsSerializerVal(serializers.ModelSerializer):
     class Meta:
         model = StudyPlanConfigs
-        fields = '__all__'
+        fields = ['subject','contentLayer','schoolLevel','startPoint','learnSpeed','aiComplexity']
     
     def validate_startPoint(self,value):
         return value.strip()
@@ -39,6 +39,14 @@ class StudyConfigsSerializer(serializers.ModelSerializer):
         except:
             raise serializers.ValidationError("Invalid ai complexity option")
 
+
+class StudyConfigsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudyPlanConfigs
+        fields = '__all__'
+    
+    
+
 class StudyPlanSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
     class Meta:
@@ -68,10 +76,10 @@ class StudyTopicSerializer(serializers.ModelSerializer):
 
 
 class StudysOverviewSerializer(serializers.ModelSerializer):
-    subject = serializers.CharField(source="configs.subject", read_only=True)
+    subject = serializers.CharField(source="study_config.subject", read_only=True)
     votes = serializers.IntegerField(read_only=True)
     my_vote = serializers.IntegerField(read_only=True,default=0)
 
     class Meta:
         model = StudyPlan
-        fields = ['id','title','image','is_public','created_at','updated_at','user','configs','votes','subject','my_vote']
+        fields = ['id','title','image','is_public','created_at','updated_at','user','votes','subject','my_vote']

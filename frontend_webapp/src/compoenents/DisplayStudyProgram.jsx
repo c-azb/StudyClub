@@ -6,7 +6,7 @@ import { UserDataContext } from '../contexts/UserDataProvider'
 import { faAngleDown,faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import UpDownVote from './UpDownVote';
 
@@ -15,9 +15,11 @@ const DisplayStudyProgram = () => {
 
     const {pk} = useParams();
 
-    const {getStudyProgram} = useContext(UserDataContext);
+    const {getStudyProgram,addStudyProgram,listAllMyPrograms,studyPrograms,deleteStudyProgrms} = useContext(UserDataContext);
     const [studyProgram,setStudyProgram] = useState(null);
     const [displaysStatus,setDisplaysStatus] = useState({});
+
+    const navigate = useNavigate();
 
     const setStudyPrograms = async () =>{
         const program = await getStudyProgram(pk);
@@ -41,6 +43,15 @@ const DisplayStudyProgram = () => {
         }else{
             setDisplaysStatus({...displaysStatus,[id]:false});
         }
+    }
+
+    const onClickDelete = async () => {
+        const res = await deleteStudyProgrms(studyProgram.id);
+        if(res){navigate('/');}
+    }
+
+    const onClickRegen = () => {
+        if(studyProgram != null) navigate(`/generateStudy/${studyProgram.id}`);
     }
 
 
@@ -74,6 +85,15 @@ const DisplayStudyProgram = () => {
             </div>
         </div>
     ))}
+
+    {studyProgram.is_owner ? 
+    <div className='d-flex float-end my-5'>
+        <button className='btn btn-danger me-3' onClick={onClickDelete}>Delete Program</button>
+        <button className='btn btn-warning' onClick={onClickRegen}>Regenerate</button>
+    </div>
+    : null
+    }
+
     </div> 
     
     : null

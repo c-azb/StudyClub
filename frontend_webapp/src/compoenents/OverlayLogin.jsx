@@ -10,9 +10,8 @@ const OverlayLogin = ({ setIsLoginDiv }) => {
 
     async function onClickLogin(e) {
         e.preventDefault();
-        res = await login(username,psw);
-        clearLogin(res);
-        
+        const res = await login(username,psw);
+        clearLogin(res);   
     }
 
 

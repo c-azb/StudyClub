@@ -1,13 +1,16 @@
 
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GENERATE_ENDPOINT } from '../constants/endpoints';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { UserDataContext } from '../contexts/UserDataProvider';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AuthContext } from '../contexts/AuthProvider';
+import { GET_CONFIGS_ENDPOINT } from '../constants/endpoints';
 
 const GenerateStudy = () => {
+
+  const {pk} = useParams();
 
   const contentLayerOptions = ["Basics","Mediun","Advanced"];
   const schoolLevelOptions = ["Primary","Middle school","High School","Bachelor's","Specialist","Master's","Doctoral"];
@@ -28,6 +31,37 @@ const GenerateStudy = () => {
   const navigate = useNavigate();
   const {getStudyProgram,addStudyProgram} = useContext(UserDataContext);
   const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
+
+  const initData = async () => {
+    if (pk == "none") return;
+    
+    const res = await fetch(`${GET_CONFIGS_ENDPOINT}${pk}/`,{
+      method:"GET",
+      headers:{"Authorization": "Bearer " + accessToken.current }
+    })
+    
+    const data = await res.json();
+    console.log(data);
+    
+    if(res.ok){
+      /*
+      aiComplexity:0
+contentLayer:0
+id 2
+learnSpeed 0
+schoolLevel "high school"
+startPoint:""
+studyPlan:3
+subject:"Python basics"
+      */
+
+    }
+
+
+
+  }
+
+  useEffect(()=>{initData();},[]);
 
   const onClickGenerate = async () => {
     setIsGenerating(true);

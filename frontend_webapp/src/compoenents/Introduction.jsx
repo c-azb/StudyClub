@@ -14,7 +14,7 @@ const Introduction = () => {
     </p>
 
     <div className='d-flex'>
-        <button onClick={()=>{navigate("/generateStudy");}} className='mx-auto mt-3 btn btn-outline-warning fw-bold'>
+        <button onClick={()=>{navigate("/generateStudy/none");}} className='mx-auto mt-3 btn btn-outline-warning fw-bold'>
             Start Creating
         </button>
     </div>

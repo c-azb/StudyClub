@@ -35,6 +35,8 @@ const UserDataProvider = ({children}) => {
     const getStudyGroup = async (pk,endpoint,header) => {
         const res = await fetch(`${endpoint}${pk}/` ,{method:"GET",headers:header});
         const data = await res.json();
+        console.log(data);
+        
 
         if(res.ok){
             return data;
@@ -86,6 +88,14 @@ const UserDataProvider = ({children}) => {
         return null;
     }
 
+    const deleteStudyProgrms = async (pk) => {
+        const res = await fetch(`${PRIVATE_GROUP_ENDPOINT}${pk}/` ,{
+            method:"DELETE",
+            headers:{"Authorization":`Bearer ${accessToken.current}`}
+        });
+        return res.ok;
+    }
+
 
 
 
@@ -96,7 +106,7 @@ const UserDataProvider = ({children}) => {
 
 
   return (
-    <UserDataContext.Provider value={{getStudyProgram,addStudyProgram,listAllMyPrograms,studyPrograms}} >
+    <UserDataContext.Provider value={{getStudyProgram,addStudyProgram,listAllMyPrograms,studyPrograms,deleteStudyProgrms}} >
         {children}
     </UserDataContext.Provider>
   )

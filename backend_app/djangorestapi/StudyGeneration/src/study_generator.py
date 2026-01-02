@@ -38,7 +38,7 @@ class StudyGeneration:
 
         if res[1]:
             goto = "generate_content_node"
-            plan = res[0]['structured_plan'].study_plan[:2]
+            plan = res[0]['structured_plan'].study_plan[:2] #get only two for quick generation/testing....
         
         return Command(goto=goto, update={"study_plan":plan})
     

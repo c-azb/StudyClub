@@ -1,4 +1,5 @@
 
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,7 +7,7 @@ from rest_framework import status
 from .src.study_generator import StudyGeneration,LLMs
 from .src.llms import get_llm
 from .src.configs_setup import create_user_input,get_ai_complexity_setups
-from .serializers import StudyPlanSerializer,TopicSerializer,StudyConfigsSerializer,StudyTopicSerializer,StudysOverviewSerializer
+from .serializers import StudyPlanSerializer,TopicSerializer,StudyConfigsSerializer,StudyTopicSerializer,StudysOverviewSerializer, StudyConfigsSerializerVal
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -22,7 +23,7 @@ class GenerateView(APIView):
 
     def post(self,request):
 
-        configs_serializer = StudyConfigsSerializer(data = request.data)
+        configs_serializer = StudyConfigsSerializerVal(data = request.data)
 
         if not configs_serializer.is_valid():
             return Response( configs_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST )
@@ -40,24 +41,25 @@ class GenerateView(APIView):
         print("Generating content")
         res = study_gen.invoke(user_input=user_input)
 
+        request.data['user'] = request.user.pk
+        study_plan_serializer = StudyPlanSerializer(data = request.data)
+        if not study_plan_serializer.is_valid():
+            return Response( study_plan_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST )
+        else:
+            sp_inst = study_plan_serializer.save()
+
         study_content = res["study_content"]
         study_plan = res["study_plan"]
 
-        inst = configs_serializer.save()
-        request.data['user'] = request.user.pk
-        request.data['configs'] = inst.pk
+        request.data['studyPlan'] = sp_inst.pk
+        configs_serializer = StudyConfigsSerializer(data = request.data)
+        if configs_serializer.is_valid(): configs_serializer.save()
+        else: return Response( configs_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST )
 
-        study_plan_serializer = StudyPlanSerializer(data = request.data)
-
-        if not study_plan_serializer.is_valid():
-            return Response( study_plan_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST )
-
-        instance = study_plan_serializer.save()
-        pk = instance.pk
         topics = []
 
         for i,topic,content in zip(range(0,len(study_plan)),study_plan,study_content):
-            topic_data={"index":i,"title":topic,"content":content,"study_plan":pk}
+            topic_data={"index":i,"title":topic,"content":content,"study_plan":sp_inst.pk}
             topics.append(topic_data)
 
         topic_serializer = TopicSerializer(data=topics,many=True)
@@ -67,10 +69,10 @@ class GenerateView(APIView):
             print(topic_serializer.error_messages)
         
         data = {
-            'id':pk,
+            'id':sp_inst.pk,
             'title':study_plan_serializer.validated_data['title'],
-            "created_at":instance.created_at,
-            "updated_at":instance.updated_at,
+            "created_at":sp_inst.created_at,
+            "updated_at":sp_inst.updated_at,
             'user':request.user.pk,
             'topics':topics
         }
@@ -79,7 +81,8 @@ class GenerateView(APIView):
 
 
     def get(self,request):
-        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).select_related("configs").\
+        #study_config__studyPlan
+        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).prefetch_related("study_config__studyPlan").\
             annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
                      my_vote =Coalesce(Sum("group_votes__vote",filter=Q(group_votes__user=request.user.pk)),Value(0))  ).order_by("-updated_at")
         
@@ -89,6 +92,7 @@ class GenerateView(APIView):
         #my_study_plans = StudyPlan.objects.filter(user=request.user.pk).order_by("-updated_at")
         #serializer = StudyPlanSerializer(my_study_plans,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
 
 
 class RetrieveTopicsView(APIView):
@@ -115,8 +119,11 @@ class LatestGroups(APIView):
         #order_by = "-up_votes" if isFeatured else "-created_at" 
 
         #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").prefetch_related('group_votes').order_by("-created_at")
-        latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
-        featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
+        #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
+        #featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
+
+        latest = StudyPlan.objects.filter(is_public=True).prefetch_related("study_config__studyPlan").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
+        featured = latest.order_by('-votes') #StudyPlan.objects.filter(is_public=True).select_related("study_config__studyPlan").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
         
         if len(latest) > 10: latest = latest[:10]
         if len(featured) > 10: featured = featured[:10]
@@ -137,7 +144,9 @@ class PublicGroup(APIView):
                     annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)), my_vote =Value(0) ).first()
         
         serializer = StudyTopicSerializer(study_plan)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        data = serializer.data
+        data['is_owner'] = False
+        return Response(data,status=status.HTTP_200_OK)
 
         
 class PrivateGroup(APIView):
@@ -151,8 +160,24 @@ class PrivateGroup(APIView):
                         annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
                                  my_vote =Coalesce(Sum("group_votes__vote",filter=Q(group_votes__user=request.user.pk)),Value(0)) ).first()
         serializer = StudyTopicSerializer(study_plan)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        data = serializer.data
+        data['is_owner'] = serializer.data['user'] == request.user.pk
+        return Response(data,status=status.HTTP_200_OK)
 
         
         #res=StudyPlan.objects.filter(is_public=True).order_by("-created_at").prefetch_related("topic_set").all()
 
+
+    def delete(self,request,pk):
+        study_plan = get_object_or_404(StudyPlan,pk=pk,user=request.user)
+        study_plan.delete()
+        return Response(status=status.HTTP_200_OK)
+
+class GetMyGroupConfigs(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,pk):
+        study_plan_configs = get_object_or_404(StudyPlanConfigs,studyPlan=pk,studyPlan__user = request.user)
+        serializer = StudyConfigsSerializer(study_plan_configs)
+        return Response(serializer.data,status=status.HTTP_200_OK)
