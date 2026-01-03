@@ -23,6 +23,10 @@ class GenerateView(APIView):
 
     def post(self,request):
 
+        if 'regen' in request.data:
+            old_study_plan = get_object_or_404(StudyPlan,pk=request.data['regen'],user=request.user)
+        else: old_study_plan = None
+
         configs_serializer = StudyConfigsSerializerVal(data = request.data)
 
         if not configs_serializer.is_valid():
@@ -77,12 +81,13 @@ class GenerateView(APIView):
             'topics':topics
         }
 
+        if old_study_plan is not None: old_study_plan.delete()
+
         return Response(data,status=status.HTTP_200_OK)
 
 
     def get(self,request):
-        #study_config__studyPlan
-        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).prefetch_related("study_config__studyPlan").\
+        my_study_plans = StudyPlan.objects.filter(user=request.user.pk).prefetch_related("studyconfig").\
             annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)),\
                      my_vote =Coalesce(Sum("group_votes__vote",filter=Q(group_votes__user=request.user.pk)),Value(0))  ).order_by("-updated_at")
         
@@ -115,21 +120,15 @@ class LatestGroups(APIView):
     permission_classes = [AllowAny]
 
     def get(self,request):
-        #isFeatured = request.query_params.get('isFeatured', None)
-        #order_by = "-up_votes" if isFeatured else "-created_at" 
+        latest = StudyPlan.objects.filter(is_public=True).prefetch_related("studyconfig").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
+        featured = latest.order_by('-votes')
 
-        #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").prefetch_related('group_votes').order_by("-created_at")
-        #latest = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
-        #featured = StudyPlan.objects.filter(is_public=True).select_related("configs").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
-
-        latest = StudyPlan.objects.filter(is_public=True).prefetch_related("study_config__studyPlan").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-created_at")
-        featured = latest.order_by('-votes') #StudyPlan.objects.filter(is_public=True).select_related("study_config__studyPlan").annotate( votes =Coalesce(Sum("group_votes__vote"),Value(0)) ).order_by("-votes")
-        
         if len(latest) > 10: latest = latest[:10]
         if len(featured) > 10: featured = featured[:10]
         
         latest_serializer = StudysOverviewSerializer(latest,many=True)
         featured_serializer = StudysOverviewSerializer(featured,many=True)
+        print(latest_serializer.data)
         data = {"latest":latest_serializer.data,"featured":featured_serializer.data}
         return Response(data,status=status.HTTP_200_OK)
 
@@ -173,11 +172,17 @@ class PrivateGroup(APIView):
         study_plan.delete()
         return Response(status=status.HTTP_200_OK)
 
-class GetMyGroupConfigs(APIView):
+class GetStudyConfigs(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self,request,pk):
         study_plan_configs = get_object_or_404(StudyPlanConfigs,studyPlan=pk,studyPlan__user = request.user)
+        study_plan = get_object_or_404(StudyPlan,pk=pk,user = request.user)
         serializer = StudyConfigsSerializer(study_plan_configs)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        data = serializer.data
+        data['title'] = study_plan.title
+        data['is_public'] = study_plan.is_public
+        return Response(data,status=status.HTTP_200_OK)
+
+

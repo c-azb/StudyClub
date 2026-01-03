@@ -14,7 +14,18 @@ const StudyGroupItem = ( {group} ) => {
 
   const onSelectItem = () =>{
     navigate("/displayStudy/"+group.id);
-  }  
+  }
+
+  const get_limited_subject = () => {
+    if("subject" in group){
+      const subject = group.subject;
+      if(subject.length > 25){
+        return subject.slice(0, 25) + '...';
+      }
+      return subject;
+    }
+    return null;
+  }
 
   return (
     <>
@@ -29,7 +40,7 @@ const StudyGroupItem = ( {group} ) => {
         </div>
         <div className='mx-3 d-flex flex-column'>
             <span  onClick={onSelectItem} className='fw-bold fs-3 item-title'>{group.title}</span>
-            <span className='fst-italic' >{"subject" in group ? group.subject : null}</span>
+            <span className='fst-italic' >{get_limited_subject()}</span>
             <UpDownVote studyProgram={group} canVote={false} />
             {/* <div className='d-flex mt-auto ms-auto'>
               <div className='me-1'>

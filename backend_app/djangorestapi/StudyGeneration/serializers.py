@@ -74,9 +74,8 @@ class StudyTopicSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class StudysOverviewSerializer(serializers.ModelSerializer):
-    subject = serializers.CharField(source="study_config.subject", read_only=True)
+    subject = serializers.CharField(source="studyconfig.first.subject", read_only=True)
     votes = serializers.IntegerField(read_only=True)
     my_vote = serializers.IntegerField(read_only=True,default=0)
 

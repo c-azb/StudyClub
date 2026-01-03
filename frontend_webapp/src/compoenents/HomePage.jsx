@@ -17,6 +17,7 @@ const HomePage = () => {
       const data = await res.json();
 
       //if("latest" in data) console.log(data.latest);
+      //console.log(data);
       
       if(res.ok){
         setFeaturedGroups(data.featured);

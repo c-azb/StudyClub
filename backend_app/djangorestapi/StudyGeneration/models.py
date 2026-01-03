@@ -23,7 +23,7 @@ class StudyPlanConfigs(models.Model):
     startPoint = models.CharField(max_length=1000,blank=True,default='')
     learnSpeed = models.IntegerField(choices=[(member.value, member.name) for member in LearnSpeedEnum])
     aiComplexity = models.IntegerField(choices=[(member.value, member.name) for member in AIComplexityEnum])
-    studyPlan = models.ForeignKey(StudyPlan,on_delete=models.CASCADE,related_name='study_config')
+    studyPlan = models.ForeignKey(StudyPlan,related_name='studyconfig',on_delete=models.CASCADE)
 
 class Topic(models.Model):
     index = models.IntegerField()

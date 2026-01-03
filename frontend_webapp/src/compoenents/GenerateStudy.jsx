@@ -44,20 +44,16 @@ const GenerateStudy = () => {
     console.log(data);
     
     if(res.ok){
-      /*
-      aiComplexity:0
-contentLayer:0
-id 2
-learnSpeed 0
-schoolLevel "high school"
-startPoint:""
-studyPlan:3
-subject:"Python basics"
-      */
-
+      setAIComplexity(data.aiComplexity);
+      setContentLayer(data.contentLayer);
+      setLearnSpeed(data.learnSpeed);
+      setSchoolLevel(data.schoolLevel);
+      setStartPoint(data.startPoint);
+      setSubject(data.subject);
+      setTitle(data.title);
+      setIsPublic(data.is_public);
     }
-
-
+    else{console.log(data);}
 
   }
 
@@ -71,6 +67,7 @@ subject:"Python basics"
     Object.entries(sendData).forEach(([key, value]) => {
       formData.append(key, value);
     });
+    if (pk != 'none') formData.append('regen',pk);
 
     const res = await fetch(GENERATE_ENDPOINT,{
       method:"POST",
