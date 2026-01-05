@@ -7,6 +7,8 @@ export const REGISTER_ENDPOINT = accEndpoint + "register/";
 export const LOGIN_ENDPOINT = accEndpoint + "token/";
 export const REFRESH_ENDPOINT = accEndpoint + "token/refresh/";
 export const LOGOUT_ENDPOINT = accEndpoint + "logout/";
+export const USERNAME_ENDPOINT = accEndpoint + "username/";
+export const PSW_ENDPOINT = accEndpoint + "psw/";
 
 const generateEndpoint = baseEndpoint + "generateStudy/"
 export const GENERATE_ENDPOINT = generateEndpoint + "generate/";

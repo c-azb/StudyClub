@@ -128,7 +128,7 @@ class LatestGroups(APIView):
         
         latest_serializer = StudysOverviewSerializer(latest,many=True)
         featured_serializer = StudysOverviewSerializer(featured,many=True)
-        print(latest_serializer.data)
+        #print(latest_serializer.data)
         data = {"latest":latest_serializer.data,"featured":featured_serializer.data}
         return Response(data,status=status.HTTP_200_OK)
 

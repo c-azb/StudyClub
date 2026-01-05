@@ -42,3 +42,13 @@ class TokenRefreshSerializerCookie(TokenRefreshSerializer):
         attrs["refresh"] = cookie_refresh
 
         return super().validate(attrs)
+
+
+class ChangePswSerializer(serializers.Serializer):
+    psw = serializers.CharField(write_only=True)
+    newPsw = serializers.CharField(write_only=True)
+    newPswConf = serializers.CharField(write_only=True)
+
+class ChangeAccSerializer(serializers.Serializer):
+    psw = serializers.CharField(write_only=True)
+    username = serializers.CharField(write_only=True)
