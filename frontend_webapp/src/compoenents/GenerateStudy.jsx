@@ -30,7 +30,7 @@ const GenerateStudy = () => {
   const [isGenerating,setIsGenerating] = useState(false);
   const navigate = useNavigate();
   const {getStudyProgram,addStudyProgram} = useContext(UserDataContext);
-  const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
+  const {isLoggedIn,register,login,logout,accessToken,tryRefreshAccessToken} = useContext(AuthContext);
 
   const initData = async () => {
     if (pk == "none") return;
@@ -53,7 +53,10 @@ const GenerateStudy = () => {
       setTitle(data.title);
       setIsPublic(data.is_public);
     }
-    else{console.log(data);}
+    else{
+      console.log(data);
+      await tryRefreshAccessToken(data,initData,[]);
+    }
 
   }
 
@@ -82,7 +85,10 @@ const GenerateStudy = () => {
     if(res.ok){
       addStudyProgram(data);
       navigate(`/displayStudy/${data.id}`)
-    }else{console.log(data);}
+    }else{
+      console.log(data);
+      await tryRefreshAccessToken(data,onClickGenerate,[]);
+    }
   }
 
   return (

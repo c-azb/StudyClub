@@ -8,7 +8,7 @@ const UpDownVote = ({studyProgram,canVote=false}) => {
 
     const [myVote,setMyVote] = useState(0);
     const [voting,setVoting] = useState(!canVote);
-    const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
+    const {isLoggedIn,register,login,logout,accessToken,tryRefreshAccessToken} = useContext(AuthContext);
 
     useEffect(()=>{
         if("my_vote" in studyProgram && canVote) 
@@ -34,7 +34,10 @@ const UpDownVote = ({studyProgram,canVote=false}) => {
 
         if(res.ok){            
             setMyVote(newVote);
-        }else{console.log(data);}
+        }else{
+            console.log(data);
+            await tryRefreshAccessToken(data,onVote,[newVote]);
+        }
         setVoting(false);
     }
 

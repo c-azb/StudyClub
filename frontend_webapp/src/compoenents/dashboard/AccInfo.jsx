@@ -8,7 +8,7 @@ const AccInfo = () => {
   const [psw,setPsw] = useState('');
   const [newPsw,setNewPsw] = useState('');
   const [newPswConf,setNewPswConf] = useState('');
-  const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
+  const {isLoggedIn,register,login,logout,accessToken,tryRefreshAccessToken} = useContext(AuthContext);
   const [loading,setLoading] = useState(false);
 
   function clearPswFields(){
@@ -23,7 +23,10 @@ const AccInfo = () => {
     const data = await res.json();
     if(res.ok){
       setUsername(data.username);
-    }else{console.log(data);}
+    }else{
+      console.log(data);
+      await tryRefreshAccessToken(data,initUsername,[]);
+    }
     setLoading(false);
   }
 
@@ -55,6 +58,8 @@ const AccInfo = () => {
     }else{
       const resData = await res.json();
       console.log(resData);
+      await tryRefreshAccessToken(resData,sendRequest,[endpoint,data]);
+      //if(success) sendRequest(endpoint,data);
     }
     setLoading(false);
   }

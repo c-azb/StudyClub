@@ -7,7 +7,7 @@ const UserDataContext = createContext();
 
 const UserDataProvider = ({children}) => {
 
-    const {isLoggedIn,register,login,logout,accessToken} = useContext(AuthContext);
+    const {isLoggedIn,register,login,logout,accessToken,tryRefreshAccessToken} = useContext(AuthContext);
     const [studyPrograms,setStudyPrograms] = useState([]);
     const isUpdated = useRef(false);
 
@@ -27,6 +27,7 @@ const UserDataProvider = ({children}) => {
         }
         else{
             console.log(data);
+            await tryRefreshAccessToken(data,listAllMyPrograms,[]);
         }
     }
 
@@ -35,13 +36,13 @@ const UserDataProvider = ({children}) => {
     const getStudyGroup = async (pk,endpoint,header) => {
         const res = await fetch(`${endpoint}${pk}/` ,{method:"GET",headers:header});
         const data = await res.json();
-        console.log(data);
+        //console.log(data);
         
-
         if(res.ok){
             return data;
         }else{
             console.log(data);
+            if('Authorization' in header) await tryRefreshAccessToken(data,getStudyGroup,[pk,endpoint,header]);
         }
         return null;
     }

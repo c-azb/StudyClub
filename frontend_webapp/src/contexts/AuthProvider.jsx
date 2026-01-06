@@ -85,9 +85,27 @@ const AuthProvider = ({children}) => {
       accessToken.current = null;
       setIsLoggedIn(false);
       if(!res.ok){
-        localStorage.setItem("logout","1")
+        const data = await res.json();
+        await tryRefreshAccessToken(data,logout,[]);
+        // localStorage.setItem("logout","1")
       }
       return res.ok;
+    }
+
+    const tryRefreshAccessToken = async (data,recallFunction,recalFunctionArgs) => {
+      
+      if('code' in data && data['code'] == 'token_not_valid' && 'messages' in data){
+        for(const msg of data['messages']){
+          if('message' in msg && msg['message'] == 'Token is expired'){
+            await refreshLogin();
+
+            if(accessToken.current != null) 
+              await recallFunction(...recalFunctionArgs)              
+          }
+
+        }
+      }
+      //return false;
     }
 
     useEffect( ()=>{refreshLogin();},[] );
@@ -95,7 +113,7 @@ const AuthProvider = ({children}) => {
 
 
   return (
-   <AuthContext.Provider value={ {isLoggedIn,register,login,logout,accessToken} }>
+   <AuthContext.Provider value={ {isLoggedIn,register,login,logout,accessToken, tryRefreshAccessToken} }>
     {children}
    </AuthContext.Provider>
   )
