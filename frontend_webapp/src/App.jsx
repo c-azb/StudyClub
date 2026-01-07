@@ -37,7 +37,7 @@ function App() {
       </BrowserRouter>
 
       <footer className='mt-auto d-flex p-3 border-top'>
-          <p className='m-auto'>Study Club ©</p>   {/* alt+0169 */}
+          <p className='mx-auto'>Study Club ©</p>   {/* alt+0169 */}
       </footer>
     </div>
     

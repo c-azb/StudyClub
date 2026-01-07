@@ -32,10 +32,10 @@ const StudyGroupItem = ( {group} ) => {
 
     <div className='border rounded border-secondary p-2 m-2'>
         <div className="d-flex">
-        <div>
+        <div className='mt-2'>
         <img draggable={false} src={
           group.image ? `${FILE_ENDPOINT}${group.image}` : undefinedimg
-        } alt="" style={{width:"150px",height:"auto",objectFit:"cover"}} />
+        } alt="" style={{width:"200px",height:"200px",objectFit:"cover"}} />
 
         </div>
         <div className='mx-3 d-flex flex-column'>

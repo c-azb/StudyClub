@@ -68,26 +68,26 @@ const AccInfo = () => {
   return (
     <>
     
-    <div className='d-flex flex-column'>
+    <div className='d-flex flex-column px-5'>
 
       <form onSubmit={changeUsername} className='d-flex flex-column'>
         
-          <label htmlFor="">Username</label>
-          <input value={username} onChange={(e)=>{setUsername(e.target.value);}} type="text" className='ms-1' />
-          <label htmlFor="">Current Password</label>
-          <input value={psw} onChange={(e)=>{setPsw(e.target.value);}} type="password" className='ms-1' />
-        <input type="submit" value='Update Username' disabled={loading} className='w-50 mx-auto mt-3' />
+          <label htmlFor="" className='mt-1'>Username</label>
+          <input value={username} onChange={(e)=>{setUsername(e.target.value);}} type="text" className='ms-1 text-input mt-1' />
+          <label className='mt-1' htmlFor="">Current Password</label>
+          <input value={psw} onChange={(e)=>{setPsw(e.target.value);}} type="password" className='ms-1 text-input mt-1' />
+        <input type="submit" value='Update Username' disabled={loading} className='w-50 mx-auto mt-3 btn btn-outline-warning' />
         
       </form>
 
       <form onSubmit={changePsw} className='d-flex flex-column mt-5'>
           <label htmlFor="">Current Password</label>
-        <input className='ms-1' value={psw} onChange={(e)=>{setPsw(e.target.value);}} type="password" />
-          <label htmlFor="">New Password</label>
-        <input className='ms-1' value={newPsw} onChange={(e)=>{setNewPsw(e.target.value);}} type="password" />
-          <label htmlFor="">Confirm New Password</label>
-        <input className='ms-1' value={newPswConf} onChange={(e)=>{setNewPswConf(e.target.value);}} type="password" />
-        <input type="submit" value='Change Password' disabled={loading} className='w-50 mx-auto mt-3' />
+        <input className='ms-1 text-input mt-1' value={psw} onChange={(e)=>{setPsw(e.target.value);}} type="password" />
+          <label className='mt-1' htmlFor="">New Password</label>
+        <input className='ms-1 text-input mt-1' value={newPsw} onChange={(e)=>{setNewPsw(e.target.value);}} type="password" />
+          <label className='mt-1' htmlFor="">Confirm New Password</label>
+        <input className='ms-1 text-input mt-1' value={newPswConf} onChange={(e)=>{setNewPswConf(e.target.value);}} type="password" />
+        <input type="submit" value='Change Password' disabled={loading} className='w-50 mx-auto mt-3 btn btn-outline-warning' />
       </form>
 
 

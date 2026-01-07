@@ -72,7 +72,7 @@ const HorizontalList = ({groups,title}) => {
                     <FontAwesomeIcon icon={faAngleLeft} className='side-btn-icon' /> 
                     </button>)}
 
-                <div ref={scrollRef} className="d-flex flex-nowrap overflow-x-auto border rounded border-secondary"
+                <div ref={scrollRef} className="d-flex flex-nowrap overflow-x-auto border border-3 rounded border-secondary"
                 style={{scrollbarWidth: "none", // Firefox
                         msOverflowStyle: "none", // IE
                         cursor: dragging ? "grabbing" : "grab",
